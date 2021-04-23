@@ -143,9 +143,13 @@ MACH_CFLAGS := -mcpu=cortex-a55+nodotprod -mtune=cortex-a55
 endif
 # Assembler doesn't like big.LITTLE / DynamIQ setup so we optimize assembly codes for LITTLE CPU
 MACH_AFLAGS := -Wa,-mcpu=cortex-a55
+ifeq ($(call cc-option-yn, -Wa$(comma)-mcpu=cortex-a55+nodotprod),y)
+NO_DOTPROD := +nodotprod
+export NO_DOTPROD
+endif
 # Append result to CFLAGS and AFLAGS
-KBUILD_CFLAGS += $(MACH_CFLAGS) $(MACH_AFLAGS)+nodotprod
-KBUILD_AFLAGS += $(MACH_AFLAGS)+nodotprod
+KBUILD_CFLAGS += $(MACH_CFLAGS) $(MACH_AFLAGS)$(NO_DOTPROD)
+KBUILD_AFLAGS += $(MACH_AFLAGS)$(NO_DOTPROD)
 # Export to be picked up by drivers that need them
 export MACH_CFLAGS MACH_AFLAGS
 endif
